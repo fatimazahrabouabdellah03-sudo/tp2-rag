@@ -15,10 +15,7 @@ from groq import Groq
 
 model = SentenceTransformer("BAAI/bge-m3")
 
-client = QdrantClient(
-    url="TON_URL_QDRANT",
-    api_key="TA_API_KEY"
-)
+client = QdrantClient(":memory:")
 
 client.create_collection(
     collection_name="TP2_RAG",
