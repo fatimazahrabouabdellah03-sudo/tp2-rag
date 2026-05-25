@@ -16,8 +16,8 @@ from groq import Groq
 model = SentenceTransformer("BAAI/bge-m3")
 
 client = QdrantClient(
-    url="TON_URL_QDRANT",
-    api_key="TA_CLE"
+    url="https://e0ef3817-2d2d-4e5d-9e79-af81af922bfe.eu-west-2-0.aws.cloud.qdrant.io",
+    api_key="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3MiOiJtIiwic3ViamVjdCI6ImFwaS1rZXk6M2IzMTgxMzYtNzNiMy00ZTlmLThkN2QtOTU4NmY1MGIwY2Q5In0.5b4kXLKWRlS0sN5aTo1CsNXNscQaAgJXFNpIyrQhY1E"
 )
 
 client.create_collection(
