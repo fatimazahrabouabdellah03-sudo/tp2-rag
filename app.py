@@ -20,13 +20,14 @@ client = QdrantClient(
     api_key="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3MiOiJtIiwic3ViamVjdCI6ImFwaS1rZXk6M2IzMTgxMzYtNzNiMy00ZTlmLThkN2QtOTU4NmY1MGIwY2Q5In0.5b4kXLKWRlS0sN5aTo1CsNXNscQaAgJXFNpIyrQhY1E"
 )
 
-client.create_collection(
-    collection_name="TP2_RAG",
-    vectors_config=VectorParams(
-        size=1024,
-        distance=Distance.COSINE
+if not client.collection_exists("TP2_RAG"):
+    client.create_collection(
+        collection_name="TP2_RAG",
+        vectors_config=VectorParams(
+            size=1024,
+            distance=Distance.COSINE
+        )
     )
-)
 
 documents = [
    # Français
@@ -51,17 +52,19 @@ documents = [
 
 vectors = model.encode(documents)
 
-payload = [
-    {"text": documents[0]},
-    {"text": documents[1]},
-    {"text": documents[2]}
-]
+payload = [{"text": doc} for doc in documents]
+ids = list(range(len(documents)))
 
-client.upload_collection(
+client.upload_points(
     collection_name="TP2_RAG",
-    vectors=vectors,
-    payload=payload,
-    ids=[1, 2, 3]
+    points=[
+        {
+            "id": i,
+            "vector": vectors[i],
+            "payload": {"text": documents[i]}
+        }
+        for i in range(len(documents))
+    ]
 )
 
 client_groq = Groq(
@@ -78,9 +81,9 @@ def rag(question):
     query_vector = model.encode(question)
 
     results = client.query_points(
-        collection_name="TP2_RAG",
-        query=query_vector,
-        limit=2
+    collection_name="TP2_RAG",
+    query=query_vector,
+    limit=2
     )
 
     context = ""
